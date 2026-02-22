@@ -7,29 +7,29 @@ const coffeeMethods = [
         { name: '第三段注水', time: 30 },
         { name: '滴滤', time: 30 }
     ]},
-    { id: 'french-press', name: '法压壶', icon: '🫖', desc: 'Full-bodied immersion brew, rich and bold', defaultStages: [
+    { id: 'french-press', name: '法压壶', icon: '🫖', desc: '全身浸没式冲泡，口感醇厚浓郁', defaultStages: [
         { name: '预热', time: 15 },
         { name: '注水', time: 20 },
         { name: '搅拌', time: 10 },
         { name: '浸泡', time: 240 },
         { name: '压滤', time: 30 }
     ]},
-    { id: 'aeropress', name: '爱乐压', icon: '💨', desc: 'Quick and versatile, great for espresso-style', defaultStages: [
+    { id: 'aeropress', name: '爱乐压', icon: '💨', desc: '快速多用途，适合制作浓缩咖啡风格', defaultStages: [
         { name: '预热', time: 10 },
         { name: '注水搅拌', time: 10 },
         { name: '压滤', time: 30 }
     ]},
-    { id: 'clever', name: '聪明杯', icon: '🧠', desc: 'Easy immersion-drip hybrid, perfect for office', defaultStages: [
+    { id: 'clever', name: '聪明杯', icon: '🧠', desc: '浸泡滴滤两用，简单易用适合办公', defaultStages: [
         { name: '闷蒸', time: 45 },
         { name: '浸泡', time: 90 },
         { name: '过滤', time: 60 }
     ]},
-    { id: 'cold-brew', name: '冷萃', icon: '🧊', desc: 'Smooth, low-acidity cold brew concentrate', defaultStages: [
+    { id: 'cold-brew', name: '冷萃', icon: '🧊', desc: '冷水中长时间萃取，口感顺滑低酸', defaultStages: [
         { name: '冷水注入', time: 60 },
         { name: '冷藏萃取', time: 43200 },
         { name: '过滤', time: 300 }
     ]},
-    { id: 'siphon', name: '虹吸壶', icon: '⚗️', desc: 'Elegant vacuum brew, clean and complex', defaultStages: [
+    { id: 'siphon', name: '虹吸壶', icon: '⚗️', desc: '优雅的真空冲泡方式，口感干净风味复杂', defaultStages: [
         { name: '预热', time: 30 },
         { name: '上水', time: 60 },
         { name: '萃取', time: 90 },
@@ -539,7 +539,7 @@ function showRecipePreview(methodId, recipeIndex) {
     
     document.getElementById('preview-start-btn').onclick = function() {
         closeRecipePreview();
-        startWithRecipe(methodId, recipeIndex);
+        startWithRecipe(methodId, recipeIndex, true);
     };
     
     if (recipe.url) {
@@ -867,7 +867,7 @@ function applyManualParamsToTimer() {
 
 // Timer - 显示阶段列表
 function renderTimerStages(method) {
-    const container = document.getElementById('timer-stages') || document.getElementById('timer-stages-display');
+    const container = document.getElementById('timer-stages-display');
     if (!container || !method) {
         container.innerHTML = '<div class="stage-item"><span class="stage-name">选择配方</span><span class="stage-time">-</span></div>';
         return;

@@ -1785,5 +1785,11 @@ window.pauseTimer = pauseTimer;
 window.resetTimer = resetTimer;
 window.switchParamMode = switchParamMode;
 window.addStage = addStage;
+window.toggleRecommendedPanel = function() {
+    const panel = document.getElementById('recommended-params-panel');
+    if (panel) {
+        panel.classList.toggle('active');
+    }
+};
 
 }

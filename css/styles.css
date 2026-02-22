@@ -1603,6 +1603,8 @@ h1, h2, h3, h4 {
 .mobile-nav-items {
     display: flex;
     justify-content: space-around;
+    align-items: stretch;
+    height: 100%;
 }
 
 .mobile-nav-item {
@@ -1618,6 +1620,7 @@ h1, h2, h3, h4 {
     transition: var(--transition);
     border: none;
     background: none;
+    flex: 1;
 }
 
 .mobile-nav-item.active {

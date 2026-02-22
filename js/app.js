@@ -304,8 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupRating();
     setupEventListeners();
     setupRecipeEventListeners();
-    switchParamMode('recommended');
-    
     // Initialize timer progress circle to empty (offset = circumference = 816)
     const circle = document.querySelector('.timer-progress circle');
     if (circle) {
@@ -378,7 +376,7 @@ function navigateTo(page) {
     }
     
     if (page === 'timer' && !currentTimerMethod) {
-        switchParamMode('recommended');
+        // 不自动展开推荐面板，等待用户点击
     }
 }
 

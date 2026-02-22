@@ -757,8 +757,11 @@ function switchParamMode(mode) {
     const panel = document.getElementById('recommended-params-panel');
     const isRecommendedMode = mode === 'recommended';
     
+    console.log('switchParamMode called:', mode, 'paramMode:', paramMode, 'panel exists:', !!panel);
+    
     // 如果点击推荐参数按钮且当前就是推荐模式，切换面板显隐
     if (isRecommendedMode && paramMode === 'recommended') {
+        console.log('Toggling panel, current has active:', panel?.classList.contains('active'));
         panel?.classList.toggle('active');
         return;
     } 

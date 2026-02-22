@@ -1957,7 +1957,7 @@ h1, h2, h3, h4 {
 
 /* Recommended Params Panel */
 .recommended-params-panel {
-    background: #ff0000; /* 调试：红色背景 */
+    background: var(--surface);
     border-radius: var(--radius);
     padding: 0;
     box-shadow: var(--shadow);
@@ -1965,11 +1965,10 @@ h1, h2, h3, h4 {
     overflow: hidden;
     max-height: 0;
     opacity: 0;
-    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease, background 0.3s ease;
+    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
 }
 
 .recommended-params-panel.active {
-    background: var(--surface);
     max-height: 500px;
     opacity: 1;
     padding: 24px;

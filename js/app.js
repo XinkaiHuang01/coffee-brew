@@ -756,16 +756,30 @@ function renderTimerStages(method) {
 }
 
 function switchParamMode(mode) {
+    const panel = document.getElementById('recommended-params-panel');
+    const isRecommendedMode = mode === 'recommended';
+    
+    // 如果点击推荐参数按钮且当前就是推荐模式，切换面板显隐
+    if (isRecommendedMode && paramMode === 'recommended') {
+        panel?.classList.toggle('active');
+        return;
+    } 
+    
+    // 切换模式
     paramMode = mode;
-    document.getElementById('btn-recommended')?.classList.toggle('active', mode === 'recommended');
+    document.getElementById('btn-recommended')?.classList.toggle('active', isRecommendedMode);
     document.getElementById('btn-manual').classList.toggle('active', mode === 'manual');
-    document.getElementById('recommended-params-panel')?.classList.toggle('active', mode === 'recommended');
-    document.getElementById('manual-params-panel').classList.toggle('active', mode === 'manual');
     
     if (mode === 'manual') {
+        // 手动模式：隐藏推荐面板，显示手动面板
+        panel?.classList.remove('active');
+        document.getElementById('manual-params-panel').classList.add('active');
         renderStagesEditor();
         applyManualParamsToTimer();
     } else {
+        // 推荐模式：显示推荐面板
+        panel?.classList.add('active');
+        document.getElementById('manual-params-panel').classList.remove('active');
         renderRecipeSelectList();
     }
 }

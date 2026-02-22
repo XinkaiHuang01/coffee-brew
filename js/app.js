@@ -374,8 +374,37 @@ function navigateTo(page) {
         renderRecommendations();
     }
     
-    if (page === 'timer' && !currentTimerMethod) {
-        // 不自动展开推荐面板，等待用户点击
+    if (page === 'timer') {
+        // 如果没有选择方法，使用默认的手冲参数
+        if (!currentTimerMethod) {
+            currentTimerMethod = {
+                id: 'pour-over',
+                name: '手冲',
+                icon: '☕',
+                params: { dose: 20, water: 300, temp: 92, grind: '中', ratio: '1:15' },
+                stages: defaultMethodStages['pour-over']
+            };
+            
+            // 更新页面显示
+            document.getElementById('timer-method-name').textContent = '手冲咖啡计时';
+        }
+        
+        // 填充参数到输入框
+        const doseEl = document.getElementById('timer-dose');
+        const waterEl = document.getElementById('timer-water');
+        const tempEl = document.getElementById('timer-temp');
+        const grindEl = document.getElementById('timer-grind');
+        
+        if (doseEl && currentTimerMethod.params) doseEl.value = currentTimerMethod.params.dose || 20;
+        if (waterEl && currentTimerMethod.params) waterEl.value = currentTimerMethod.params.water || 300;
+        if (tempEl && currentTimerMethod.params) tempEl.value = currentTimerMethod.params.temp || 92;
+        if (grindEl && currentTimerMethod.params) grindEl.value = currentTimerMethod.params.grind || '中';
+        
+        // 渲染阶段显示
+        renderTimerStagesDisplay();
+        
+        // 初始化阶段编辑器
+        initTimerStagesEditor(currentTimerMethod.stages);
     }
 }
 
@@ -555,14 +584,8 @@ function startWithRecipe(methodId, recipeIndex, isCommunity = false) {
         if (tempEl) tempEl.value = recipe.params.temp;
         if (grindEl) grindEl.value = recipe.params.grind;
         
-        // 显示参数编辑面板和阶段编辑器
-        const paramsPanel = document.getElementById('manual-params-panel');
-        const stagesEditor = document.getElementById('timer-stages-editor');
-        if (paramsPanel) paramsPanel.style.display = 'block';
-        if (stagesEditor) stagesEditor.style.display = 'block';
-        
-        // 初始化阶段编辑器
-        initTimerStagesEditor(recipe.stages);
+        // 显示参数面板
+        showTimerParamsPanel();
     }, 100);
     
     showToast(`已选择 ${recipe.name}，点击开始计时`);
@@ -684,25 +707,8 @@ function selectRecipe(recipeIndex) {
     renderTimerStages(currentTimerMethod);
     renderRecipeSelectList();
     
-    // 显示参数编辑面板和阶段编辑器
-    const paramsPanel = document.getElementById('manual-params-panel');
-    const stagesEditor = document.getElementById('timer-stages-editor');
-    if (paramsPanel) paramsPanel.style.display = 'block';
-    if (stagesEditor) stagesEditor.style.display = 'block';
-    
-    // 填充参数
-    const doseEl = document.getElementById('timer-dose');
-    const waterEl = document.getElementById('timer-water');
-    const tempEl = document.getElementById('timer-temp');
-    const grindEl = document.getElementById('timer-grind');
-    
-    if (doseEl) doseEl.value = recipe.params.dose;
-    if (waterEl) waterEl.value = recipe.params.water;
-    if (tempEl) tempEl.value = recipe.params.temp;
-    if (grindEl) grindEl.value = recipe.params.grind;
-    
-    // 初始化阶段编辑器
-    initTimerStagesEditor(recipe.stages);
+    // 显示参数面板
+    showTimerParamsPanel();
     
     showToast(`已选择 ${recipe.name}`);
 }
@@ -741,6 +747,7 @@ function renderTimerStagesEditor() {
 function addTimerStage() {
     timerStages.push({ name: '新阶段', time: 30 });
     renderTimerStagesEditor();
+    renderTimerStagesEditList();
     applyTimerStagesToTimer();
 }
 
@@ -797,6 +804,7 @@ function updateTimerParams() {
 
 function renderStagesEditor() {
     const container = document.getElementById('stages-editor-list');
+    if (!container) return;
     container.innerHTML = manualStages.map((stage, index) => `
         <div class="stage-editor-item">
             <input type="text" class="form-input stage-editor-name" value="${stage.name}" 
@@ -851,10 +859,10 @@ function applyManualParamsToTimer() {
     renderTimerStages(currentTimerMethod);
 }
 
-// Timer
+// Timer - 显示阶段列表
 function renderTimerStages(method) {
-    const container = document.getElementById('timer-stages');
-    if (!method) {
+    const container = document.getElementById('timer-stages') || document.getElementById('timer-stages-display');
+    if (!container || !method) {
         container.innerHTML = '<div class="stage-item"><span class="stage-name">选择配方</span><span class="stage-time">-</span></div>';
         return;
     }
@@ -869,6 +877,165 @@ function renderTimerStages(method) {
         `;
     }).join('');
 }
+
+// 显示阶段列表（用于timer-stages-display）
+function renderTimerStagesDisplay() {
+    const container = document.getElementById('timer-stages-display');
+    if (!container || !currentTimerMethod) {
+        if (container) container.innerHTML = '<div class="stage-item"><span class="stage-name">选择配方</span><span class="stage-time">-</span></div>';
+        return;
+    }
+    let cumulativeTime = 0;
+    container.innerHTML = currentTimerMethod.stages.map((stage, index) => {
+        cumulativeTime += stage.time;
+        return `
+            <div class="stage-item" data-stage="${index}">
+                <span class="stage-name">${stage.name}</span>
+                <span class="stage-time">${formatTime(cumulativeTime)}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+// 切换编辑面板
+function toggleTimerEditPanel() {
+    const editPanel = document.getElementById('timer-edit-panel');
+    const stagesDisplay = document.getElementById('timer-stages');
+    
+    if (!editPanel || !stagesDisplay) return;
+    
+    if (editPanel.style.display === 'none') {
+        // 显示编辑面板，隐藏阶段显示
+        editPanel.style.display = 'block';
+        stagesDisplay.style.display = 'none';
+    } else {
+        // 隐藏编辑面板，显示阶段显示
+        editPanel.style.display = 'none';
+        stagesDisplay.style.display = 'block';
+        // 更新阶段显示
+        renderTimerStagesDisplay();
+    }
+}
+
+// Timer Params Panel - Unified View/Edit Functions
+function renderTimerParamsView(params, stages) {
+    // Render params display
+    const paramsContainer = document.getElementById('timer-params-display');
+    if (paramsContainer && params) {
+        paramsContainer.innerHTML = `
+            <div class="param-item">
+                <span class="param-label">粉量</span>
+                <span class="param-value">${params.dose || 20}g</span>
+            </div>
+            <div class="param-item">
+                <span class="param-label">水量</span>
+                <span class="param-value">${params.water || 300}ml</span>
+            </div>
+            <div class="param-item">
+                <span class="param-label">水温</span>
+                <span class="param-value">${params.temp || 92}°C</span>
+            </div>
+            <div class="param-item">
+                <span class="param-label">研磨度</span>
+                <span class="param-value">${params.grind || '中'}</span>
+            </div>
+        `;
+    }
+    
+    // Render stages display
+    const stagesContainer = document.getElementById('timer-stages-display');
+    if (stagesContainer && stages) {
+        let cumulativeTime = 0;
+        stagesContainer.innerHTML = stages.map((stage, index) => {
+            cumulativeTime += stage.time;
+            return `
+                <div class="stage-item" data-stage="${index}">
+                    <span class="stage-name">${stage.name}</span>
+                    <span class="stage-time">${formatTime(cumulativeTime)}</span>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function renderTimerStagesEditList() {
+    const container = document.getElementById('timer-stages-edit-list');
+    if (!container) return;
+    
+    container.innerHTML = timerStages.map((stage, index) => `
+        <div class="stage-editor-item">
+            <input type="text" class="form-input stage-editor-name" value="${stage.name}" 
+                   onchange="updateTimerStage(${index}, 'name', this.value)" placeholder="阶段名称">
+            <input type="number" class="form-input stage-editor-time" value="${stage.time}" 
+                   min="1" max="3600" onchange="updateTimerStage(${index}, 'time', this.value)" placeholder="秒">
+            <button class="stage-editor-remove" onclick="removeTimerStage(${index})">×</button>
+        </div>
+    `).join('');
+}
+
+function toggleTimerEditorMode() {
+    const viewMode = document.getElementById('timer-params-view');
+    const editMode = document.getElementById('timer-params-edit');
+    
+    if (!viewMode || !editMode) return;
+    
+    if (editMode.style.display === 'none') {
+        // Switch to edit mode
+        viewMode.style.display = 'none';
+        editMode.style.display = 'block';
+        
+        // Render edit stages list
+        renderTimerStagesEditList();
+    } else {
+        // Switch to view mode - save and update view
+        viewMode.style.display = 'block';
+        editMode.style.display = 'none';
+        
+        // Get current params from inputs
+        const params = {
+            dose: parseInt(document.getElementById('timer-dose')?.value) || 20,
+            water: parseInt(document.getElementById('timer-water')?.value) || 300,
+            temp: parseInt(document.getElementById('timer-temp')?.value) || 92,
+            grind: document.getElementById('timer-grind')?.value || '中'
+        };
+        
+        // Update timer method with current values
+        if (currentTimerMethod) {
+            currentTimerMethod.params = { ...params, ratio: `1:${Math.round(params.water / params.dose)}` };
+            currentTimerMethod.stages = [...timerStages];
+        }
+        
+        // Update view
+        renderTimerParamsView(params, timerStages);
+        renderTimerStages(currentTimerMethod);
+    }
+}
+
+function showTimerParamsPanel() {
+    const panel = document.getElementById('timer-params-panel');
+    if (panel) panel.style.display = 'block';
+    
+    // Render view mode
+    if (currentTimerMethod && currentTimerMethod.params) {
+        timerStages = [...(currentTimerMethod.stages || [])];
+        renderTimerParamsView(currentTimerMethod.params, timerStages);
+        
+        // Fill edit inputs
+        const doseEl = document.getElementById('timer-dose');
+        const waterEl = document.getElementById('timer-water');
+        const tempEl = document.getElementById('timer-temp');
+        const grindEl = document.getElementById('timer-grind');
+        
+        if (doseEl) doseEl.value = currentTimerMethod.params.dose || 20;
+        if (waterEl) waterEl.value = currentTimerMethod.params.water || 300;
+        if (tempEl) tempEl.value = currentTimerMethod.params.temp || 92;
+        if (grindEl) grindEl.value = currentTimerMethod.params.grind || '中';
+    }
+}
+
+// Export to window
+window.toggleTimerEditorMode = toggleTimerEditorMode;
+window.toggleTimerEditPanel = toggleTimerEditPanel;
 
 function switchParamMode(mode) {
     const panel = document.getElementById('recommended-params-panel');
@@ -1204,8 +1371,8 @@ function renderRecords() {
                 <button class="btn btn-primary" onclick="openRecordModal()">添加记录</button>
             </div>
         `;
-        recentContainer.innerHTML = empty;
-        allContainer.innerHTML = empty;
+        if (recentContainer) recentContainer.innerHTML = empty;
+        if (allContainer) allContainer.innerHTML = empty;
         return;
     }
     
@@ -1243,8 +1410,8 @@ function renderRecords() {
         `;
     };
     
-    recentContainer.innerHTML = recent.map(renderCard).join('');
-    allContainer.innerHTML = sortedRecords.map(renderCard).join('');
+    if (recentContainer) recentContainer.innerHTML = recent.map(renderCard).join('');
+    if (allContainer) allContainer.innerHTML = sortedRecords.map(renderCard).join('');
 }
 
 function formatDate(dateStr) {

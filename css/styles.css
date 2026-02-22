@@ -538,6 +538,183 @@ h1, h2, h3, h4 {
     color: var(--text-secondary);
 }
 
+/* Timer Params Panel (Unified View/Edit) */
+.timer-params-panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+}
+
+.timer-params-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.timer-params-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.btn-edit-params, .btn-done-params {
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-edit-params {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-edit-params:hover {
+    background: var(--primary-dark);
+}
+
+.btn-done-params {
+    background: var(--success);
+    color: white;
+}
+
+.btn-done-params:hover {
+    opacity: 0.9;
+}
+
+/* View Mode - Params Display */
+.timer-params-display {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(74, 44, 42, 0.1);
+}
+
+.timer-params-display .param-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.timer-params-display .param-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.timer-params-display .param-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* View Mode - Stages Display */
+.timer-stages-display .stage-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(74, 44, 42, 0.06);
+}
+
+.timer-stages-display .stage-item:last-child {
+    border-bottom: none;
+}
+
+/* Edit Mode */
+.timer-params-edit .edit-params-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.timer-params-edit .edit-params-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.timer-params-edit .edit-params-item label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.timer-params-edit .edit-params-item .form-input,
+.timer-params-edit .edit-params-item .form-select {
+    padding: 8px 12px;
+    border: 1px solid rgba(74, 44, 42, 0.15);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: white;
+}
+
+.timer-params-edit .edit-stages-section {
+    margin-top: 16px;
+}
+
+.timer-params-edit .stages-editor-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.timer-params-edit .stages-editor-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.timer-params-edit .stage-editor-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.timer-params-edit .stage-editor-name {
+    flex: 2;
+}
+
+.timer-params-edit .stage-editor-time {
+    flex: 1;
+    width: 70px;
+}
+
+.timer-params-edit .stage-editor-remove {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.timer-params-edit .add-stage-btn {
+    width: 100%;
+    padding: 10px;
+    border: 1px dashed rgba(74, 44, 42, 0.3);
+    background: transparent;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+}
+
+.timer-params-edit .add-stage-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
 .stage-item.active {
     background: rgba(212, 165, 116, 0.1);
     margin: 0 -16px;
@@ -1919,6 +2096,62 @@ h1, h2, h3, h4 {
     font-size: 14px;
 }
 
+/* Unified Timer Editor */
+.timer-unified-editor {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+}
+
+.unified-editor-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+.edit-params-section {
+    margin-bottom: 16px;
+}
+
+.edit-params-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.edit-params-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.edit-params-item label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.edit-params-item .form-input,
+.edit-params-item .form-select {
+    padding: 8px 10px;
+    font-size: 14px;
+}
+
+.edit-stages-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(74, 44, 42, 0.08);
+}
+
+.edit-stages-section .stages-editor-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
 /* Timer Stages Editor */
 .timer-stages-editor {
     background: var(--surface);
@@ -1926,6 +2159,99 @@ h1, h2, h3, h4 {
     padding: 16px;
     box-shadow: var(--shadow);
     margin-top: 16px;
+}
+/* Timer Edit Panel - Unified editing interface */
+.timer-edit-panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+}
+
+.edit-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(74, 44, 42, 0.08);
+}
+
+.edit-panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.edit-stages-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.edit-stages-header span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.edit-stages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Timer Stages Display - View mode */
+.timer-stages {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+}
+
+.stages-display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(74, 44, 42, 0.08);
+}
+
+.stages-display-header span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.stages-display-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stages-display-list .stage-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: rgba(74, 44, 42, 0.04);
+    border-radius: var(--radius-sm);
+}
+
+.stages-display-list .stage-name {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.stages-display-list .stage-time {
+    font-size: 14px;
+    color: var(--secondary);
+    font-weight: 600;
 }
 
 .timer-stages-editor .stages-editor-title {

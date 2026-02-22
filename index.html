@@ -138,38 +138,8 @@
                     <span>💡 选择推荐配方</span>
                     <span class="toggle-icon" id="toggle-icon">▼</span>
                 </div>
-                <div class="recommended-params-panel active" id="recommended-params-panel">
+                <div class="recommended-params-panel" id="recommended-params-panel">
                     <div class="recipe-select-list" id="recipe-select-list"></div>
-                </div>
-
-                <div class="manual-params-panel" id="manual-params-panel" style="display: none;">
-                    <div class="manual-params-title">✏️ 调整参数</div>
-                    <div class="manual-params-grid">
-                        <div class="manual-params-item">
-                            <label>粉量 (g)</label>
-                            <input type="number" class="form-input" id="timer-dose" value="20" min="1" max="100" onchange="updateTimerParams()">
-                        </div>
-                        <div class="manual-params-item">
-                            <label>水量 (ml)</label>
-                            <input type="number" class="form-input" id="timer-water" value="300" min="50" max="1000" onchange="updateTimerParams()">
-                        </div>
-                        <div class="manual-params-item">
-                            <label>水温 (°C)</label>
-                            <input type="number" class="form-input" id="timer-temp" value="92" min="0" max="100" onchange="updateTimerParams()">
-                        </div>
-                        <div class="manual-params-item">
-                            <label>研磨度</label>
-                            <select class="form-select" id="timer-grind" onchange="updateTimerParams()">
-                                <option value="极细">极细</option>
-                                <option value="细">细</option>
-                                <option value="中细">中细</option>
-                                <option value="中" selected>中</option>
-                                <option value="中粗">中粗</option>
-                                <option value="粗">粗</option>
-                                <option value="极粗">极粗</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="timer-container">
@@ -199,16 +169,56 @@
                         </button>
                     </div>
 
-                    <div class="timer-stages" id="timer-stages">
-                        <div class="stage-item" data-stage="0">
-                            <span class="stage-name">选择方法</span>
-                            <span class="stage-time">-</span>
+                    <!-- 编辑面板 -->
+                    <div class="timer-edit-panel" id="timer-edit-panel" style="display: none;">
+                        <div class="edit-panel-header">
+                            <span class="edit-panel-title">✏️ 编辑参数</span>
+                            <button class="btn btn-sm" onclick="toggleTimerEditPanel()">完成</button>
+                        </div>
+                        <div class="edit-params-section">
+                            <div class="edit-params-grid">
+                                <div class="edit-params-item">
+                                    <label>粉量 (g)</label>
+                                    <input type="number" class="form-input" id="timer-dose" value="20" min="1" max="100" onchange="updateTimerParams()">
+                                </div>
+                                <div class="edit-params-item">
+                                    <label>水量 (ml)</label>
+                                    <input type="number" class="form-input" id="timer-water" value="300" min="50" max="1000" onchange="updateTimerParams()">
+                                </div>
+                                <div class="edit-params-item">
+                                    <label>水温 (°C)</label>
+                                    <input type="number" class="form-input" id="timer-temp" value="92" min="0" max="100" onchange="updateTimerParams()">
+                                </div>
+                                <div class="edit-params-item">
+                                    <label>研磨度</label>
+                                    <select class="form-select" id="timer-grind" onchange="updateTimerParams()">
+                                        <option value="极细">极细</option>
+                                        <option value="细">细</option>
+                                        <option value="中细">中细</option>
+                                        <option value="中" selected>中</option>
+                                        <option value="中粗">中粗</option>
+                                        <option value="粗">粗</option>
+                                        <option value="极粗">极粗</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="edit-stages-section">
+                            <div class="edit-stages-header">
+                                <span>冲泡阶段</span>
+                                <button type="button" class="btn btn-sm" onclick="addTimerStage()">➕ 添加</button>
+                            </div>
+                            <div class="edit-stages-list" id="timer-stages-list"></div>
                         </div>
                     </div>
-                    <div class="timer-stages-editor" id="timer-stages-editor" style="display: none;">
-                        <div class="stages-editor-title">✏️ 调整阶段</div>
-                        <div class="stages-editor-list" id="timer-stages-list"></div>
-                        <button type="button" class="add-stage-btn" id="btn-add-timer-stage">➕ 添加阶段</button>
+
+                    <!-- 显示阶段（默认） -->
+                    <div class="timer-stages" id="timer-stages">
+                        <div class="stages-display-header">
+                            <span>冲泡阶段</span>
+                            <button class="btn btn-sm" onclick="toggleTimerEditPanel()">✏️ 编辑</button>
+                        </div>
+                        <div class="stages-display-list" id="timer-stages-display"></div>
                     </div>
 
                 </div>

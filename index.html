@@ -134,54 +134,9 @@
                     <p class="page-subtitle" id="timer-method-name">手冲咖啡计时</p>
                 </div>
 
-                <div class="param-mode-toggle">
-                    <button class="param-mode-btn active" id="btn-recommended" data-mode="recommended" onclick="toggleRecommendedPanel()">
-                        <span>📋</span> 推荐参数
-                    </button>
-                    <button class="param-mode-btn" id="btn-manual" data-mode="manual" onclick="switchParamMode('manual')">
-                        <span>✏️</span> 手动参数
-                    </button>
-                </div>
-
                 <div class="recommended-params-panel" id="recommended-params-panel">
-                    <div class="recommended-params-title">💡 选择推荐配方</div>
+                    <div class="recommended-params-title" onclick="toggleRecommendedPanel()">💡 选择推荐配方 (点击折叠)</div>
                     <div class="recipe-select-list" id="recipe-select-list"></div>
-                </div>
-
-                <div class="manual-params" id="manual-params-panel">
-                    <div class="manual-params-title">✏️ 手动设置参数</div>
-                    <div class="manual-params-grid">
-                        <div class="form-group">
-                            <label class="form-label">粉量 (g)</label>
-                            <input type="number" class="form-input" id="manual-dose" value="20" min="1" max="100">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">水量 (ml)</label>
-                            <input type="number" class="form-input" id="manual-water" value="300" min="50" max="1000">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">水温 (°C)</label>
-                            <input type="number" class="form-input" id="manual-temp" value="92" min="0" max="100">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">研磨度</label>
-                            <select class="form-select" id="manual-grind">
-                                <option value="极细">极细</option>
-                                <option value="细">细</option>
-                                <option value="中细">中细</option>
-                                <option value="中" selected>中</option>
-                                <option value="中粗">中粗</option>
-                                <option value="粗">粗</option>
-                                <option value="极粗">极粗</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="stages-editor">
-                        <div class="stages-editor-title">⏱️ 冲泡阶段</div>
-                        <div class="stages-editor-list" id="stages-editor-list"></div>
-                        <button class="add-stage-btn" id="btn-add-stage">➕ 添加阶段</button>
-                    </div>
                 </div>
 
                 <div class="timer-container">

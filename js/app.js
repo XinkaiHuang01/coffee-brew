@@ -280,7 +280,6 @@ let timerRunning = false;
 let currentStageIndex = 0;
 let uploadedImage = null;
 let selectedRating = 0;
-let paramMode = 'recommended';
 let manualStages = [
     { name: '闷蒸', time: 30 },
     { name: '第一段注水', time: 30 },
@@ -669,11 +668,6 @@ function selectRecipe(recipeIndex) {
     renderTimerStages(currentTimerMethod);
     renderRecipeSelectList();
     
-    document.getElementById('manual-dose').value = currentRecipe.params.dose;
-    document.getElementById('manual-water').value = currentRecipe.params.water;
-    document.getElementById('manual-temp').value = currentRecipe.params.temp;
-    document.getElementById('manual-grind').value = currentRecipe.params.grind;
-    
     showToast(`已选择 ${currentRecipe.name}`);
 }
 
@@ -755,30 +749,8 @@ function renderTimerStages(method) {
 
 function switchParamMode(mode) {
     const panel = document.getElementById('recommended-params-panel');
-    const isRecommendedMode = mode === 'recommended';
-    
-    // 如果点击推荐参数按钮且当前就是推荐模式，切换面板显隐
-    if (isRecommendedMode && paramMode === 'recommended') {
-        panel?.classList.toggle('active');
-        return;
-    } 
-    
-    // 切换模式
-    paramMode = mode;
-    document.getElementById('btn-recommended')?.classList.toggle('active', isRecommendedMode);
-    document.getElementById('btn-manual').classList.toggle('active', mode === 'manual');
-    
-    if (mode === 'manual') {
-        // 手动模式：隐藏推荐面板，显示手动面板
-        panel?.classList.remove('active');
-        document.getElementById('manual-params-panel').classList.add('active');
-        renderStagesEditor();
-        applyManualParamsToTimer();
-    } else {
-        // 推荐模式：显示推荐面板
-        panel?.classList.add('active');
-        document.getElementById('manual-params-panel').classList.remove('active');
-        renderRecipeSelectList();
+    if (panel) {
+        panel.classList.toggle('active');
     }
 }
 
@@ -966,9 +938,6 @@ function setupRecipeEventListeners() {
     });
     document.getElementById('save-recipe-form')?.addEventListener('submit', saveRecipe);
     document.getElementById('btn-add-recipe-stage')?.addEventListener('click', addRecipeStage);
-    document.getElementById('btn-recommended')?.addEventListener('click', () => switchParamMode('recommended'));
-    document.getElementById('btn-manual')?.addEventListener('click', () => switchParamMode('manual'));
-    
     document.getElementById('btn-save-as-recipe')?.addEventListener('click', () => openSaveRecipeModal(true));
 }
 
@@ -1086,14 +1055,6 @@ function completeTimer() {
             document.getElementById('form-time').value = timerSeconds;
             recordFormStages = [...(currentTimerMethod.stages || [])];
             renderRecordStages();
-        }
-        
-        if (paramMode === 'manual') {
-            setTimeout(() => {
-                if (confirm('是否将此配方保存为我的配方？')) {
-                    openSaveRecipeModal(false);
-                }
-            }, 500);
         }
     }, 1000);
 }
@@ -1537,14 +1498,6 @@ function replayTimerFromRecord() {
         }
         
         document.getElementById('timer-method-name').textContent = currentTimerMethod.name + ' - 重播';
-        document.getElementById('manual-dose').value = record.params.dose;
-        document.getElementById('manual-water').value = record.params.water;
-        document.getElementById('manual-temp').value = record.params.temperature;
-        document.getElementById('manual-grind').value = record.params.grindSize;
-        
-        switchParamMode('manual');
-        manualStages = [...currentTimerMethod.stages];
-        renderStagesEditor();
         renderTimerStages(currentTimerMethod);
         
         showToast('已加载记录参数，开始计时吧');

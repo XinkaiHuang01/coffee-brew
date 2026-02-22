@@ -800,6 +800,14 @@ function updateTimerParams() {
         ratio: `1:${Math.round(water/dose)}`
     };
     
+    // 如果参数被修改，清除当前选中的配方状态
+    if (currentRecipe) {
+        currentRecipe = null;
+        renderRecipeSelectList();
+    }
+    
+    // Update stages if they've been edited
+    
     // Update stages if they've been edited
     if (timerStages.length > 0) {
         currentTimerMethod.stages = [...timerStages];

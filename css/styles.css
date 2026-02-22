@@ -1635,7 +1635,7 @@ h1, h2, h3, h4 {
 
     /* Hide sidebar on tablets and below */
     .sidebar {
-        display: none;
+        display: none !important;
     }
 
     .main {

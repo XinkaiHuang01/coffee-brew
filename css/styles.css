@@ -2394,6 +2394,42 @@ h1, h2, h3, h4 {
     margin-bottom: 16px;
 }
 
+/* Timer Method Selection */
+.timer-method-select {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 0;
+}
+
+.method-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 12px;
+    border: 2px solid rgba(74, 44, 42, 0.15);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.method-btn:hover {
+    border-color: var(--accent);
+    background: rgba(212, 165, 116, 0.1);
+}
+
+.method-btn.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+}
+
 .recipe-select-list {
     display: flex;
     flex-direction: column;

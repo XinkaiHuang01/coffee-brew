@@ -130,8 +130,15 @@
 
             <div class="page" id="page-timer">
                 <div class="page-header">
-                    <h1 class="page-title">冲泡计时器</h1>
-                    <p class="page-subtitle" id="timer-method-name">手冲咖啡计时</p>
+                    <h1 class="page-title" id="timer-method-name">冲泡计时器</h1>
+                    <div class="timer-method-select" id="timer-method-select">
+                        <button class="method-btn active" data-method="pour-over" onclick="selectTimerMethod('pour-over')">☕ 手冲</button>
+                        <button class="method-btn" data-method="french-press" onclick="selectTimerMethod('french-press')">🫖 法压壶</button>
+                        <button class="method-btn" data-method="aeropress" onclick="selectTimerMethod('aeropress')">💨 爱乐压</button>
+                        <button class="method-btn" data-method="clever" onclick="selectTimerMethod('clever')">🧠 聪明杯</button>
+                        <button class="method-btn" data-method="cold-brew" onclick="selectTimerMethod('cold-brew')">🧊 冷萃</button>
+                        <button class="method-btn" data-method="siphon" onclick="selectTimerMethod('siphon')">⚗️ 虹吸壶</button>
+                    </div>
                 </div>
 
                 <div class="recommended-params-toggle" onclick="toggleRecommendedPanel()">

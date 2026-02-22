@@ -291,6 +291,7 @@ let selectedRecordForReplay = null;
 let recordFormStages = [];
 let currentRecordMethod = 'pour-over';
 let recipeFormStages = [];
+let selectedTimerMethod = 'pour-over'; // 当前选择的冲泡方法
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -574,6 +575,17 @@ function startWithRecipe(methodId, recipeIndex, isCommunity = false) {
     currentRecipe = recipe;
     currentTimerMethod = { id: methodId, name: method.name, icon: method.icon, ...recipe };
     
+    // Update selectedTimerMethod and button styling
+    selectedTimerMethod = methodId;
+    const buttons = document.querySelectorAll('.method-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.method === methodId) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
     document.getElementById('timer-method-name').textContent = `${method.name} - ${recipe.name}`;
     renderTimerStages(recipe);
     navigateTo('timer');
@@ -675,7 +687,7 @@ function renderMyRecipesPage() {
 
 function renderRecipeSelectList() {
     const container = document.getElementById('recipe-select-list');
-    const recipes = coffeeRecipes['pour-over'] || [];
+    const recipes = coffeeRecipes[selectedTimerMethod] || [];
     
     if (recipes.length === 0) {
         container.innerHTML = '<p style="color: var(--text-secondary);">暂无可用配方</p>';
@@ -702,14 +714,15 @@ function renderRecipeSelectList() {
 }
 
 function selectRecipe(recipeIndex) {
-    const recipes = coffeeRecipes['pour-over'];
+    const recipes = coffeeRecipes[selectedTimerMethod];
     if (!recipes || !recipes[recipeIndex]) return;
     
     const recipe = recipes[recipeIndex];
     currentRecipe = recipe;
-    currentTimerMethod = { id: 'pour-over', name: '手冲', icon: '☕', ...recipe };
+    const method = coffeeMethods.find(m => m.id === selectedTimerMethod);
+    currentTimerMethod = { id: selectedTimerMethod, name: method.name, icon: method.icon, ...recipe };
     
-    document.getElementById('timer-method-name').textContent = `手冲 - ${recipe.name}`;
+    document.getElementById('timer-method-name').textContent = `${method.name} - ${recipe.name}`;
     renderTimerStages(currentTimerMethod);
     renderRecipeSelectList();
     
@@ -717,6 +730,41 @@ function selectRecipe(recipeIndex) {
     showTimerParamsPanel();
     
     showToast(`已选择 ${recipe.name}`);
+}
+
+function selectTimerMethod(methodId) {
+    // Update selected button styling
+    const buttons = document.querySelectorAll('.method-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.method === methodId) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Update selected method
+    selectedTimerMethod = methodId;
+    
+    // Clear current recipe selection when changing method
+    currentRecipe = null;
+    currentTimerMethod = null;
+    
+    // Update method name display
+    const method = coffeeMethods.find(m => m.id === methodId);
+    if (method) {
+        document.getElementById('timer-method-name').textContent = method.name;
+    }
+    
+    // Re-render recipe list for new method
+    renderRecipeSelectList();
+    
+    // Load default stages for this method
+    const defaultStages = defaultMethodStages[methodId] || defaultMethodStages['pour-over'];
+    timerStages = [...defaultStages];
+    renderTimerStages({ stages: timerStages, params: {} });
+    
+    showToast(`已切换到 ${method.name}`);
 }
 
 // Manual params
@@ -2048,5 +2096,6 @@ window.toggleRecommendedPanel = function() {
         panel.classList.toggle('active');
     }
 };
+window.selectTimerMethod = selectTimerMethod;
 
 }

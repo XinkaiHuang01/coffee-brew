@@ -1,0 +1,17 @@
+{
+  "name": "coffee-brew",
+  "version": "1.0.0",
+  "description": "Coffee Brew - 咖啡冲泡记录 (with Notion)",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js & npx live-server --port=3000"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.14",
+    "axios": "^1.13.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "multer": "^2.0.2"
+  }
+}

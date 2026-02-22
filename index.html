@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Brew - 咖啡冲泡记录</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">☕</div>
+                <span class="logo-text">Coffee Brew</span>
+            </div>
+            <div id="notion-sync-section" class="notion-sync-section">
+                <label class="notion-toggle-label">
+                    <input type="checkbox" id="notion-toggle">
+                    <span class="notion-toggle-switch"></span>
+                    <span>Notion 同步</span>
+                </label>
+                <div id="sync-indicator" class="sync-indicator">○ 离线</div>
+                <button class="notion-config-btn" id="btn-open-config" title="配置 Notion">⚙️</button>
+            </div>
+            <nav class="nav">
+                <a href="javascript:void(0)" class="nav-item active" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span>首页</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" data-page="recommendations">
+                    <span class="nav-icon">📋</span>
+                    <span>推荐参数</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" data-page="timer">
+                    <span class="nav-icon">⏱️</span>
+                    <span>冲泡计时器</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" data-page="records">
+                    <span class="nav-icon">📓</span>
+                    <span>我的记录</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <div class="page active" id="page-home">
+                <div class="page-header">
+                    <h1 class="page-title">欢迎回来</h1>
+                    <p class="page-subtitle">记录你的每一杯好咖啡</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total">0</div>
+                        <div class="stat-label">累计冲泡</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-favorite">-</div>
+                        <div class="stat-label">最常用方法</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-rating">-</div>
+                        <div class="stat-label">平均评分</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-week">0</div>
+                        <div class="stat-label">本周冲泡</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-section">
+                    <h2 class="page-title dashboard-title">冲泡数据</h2>
+                    <div class="dashboard-grid">
+                        <div class="chart-card">
+                            <div class="chart-card-title">☕ 累计冲泡</div>
+                            <div class="chart-area" id="chart-method-donut"></div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-card-title">📊 本周冲泡趋势</div>
+                            <div class="chart-area" id="chart-weekly-bar"></div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-card-title">⭐ 评分分布</div>
+                            <div class="chart-area" id="chart-rating-bars"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="quick-action" data-page="timer">
+                        <div class="quick-action-icon">⏱️</div>
+                        <div class="quick-action-text">
+                            <h4>开始冲泡</h4>
+                            <p>使用计时器记录冲泡</p>
+                        </div>
+                    </button>
+                    <button class="quick-action" id="btn-add-record">
+                        <div class="quick-action-icon">➕</div>
+                        <div class="quick-action-text">
+                            <h4>添加记录</h4>
+                            <p>手动记录咖啡</p>
+                        </div>
+                    </button>
+                    <button class="quick-action" data-page="recommendations">
+                        <div class="quick-action-icon">💡</div>
+                        <div class="quick-action-text">
+                            <h4>推荐参数</h4>
+                            <p>查看冲泡建议</p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="records-header">
+                    <h2 class="page-title" style="font-size: 22px;">最近记录</h2>
+                    <button class="btn btn-outline" data-page="records">查看全部</button>
+                </div>
+                <div class="records-list" id="recent-records"></div>
+            </div>
+
+            <div class="page" id="page-recommendations">
+                <div class="page-header">
+                    <h1 class="page-title">推荐参数</h1>
+                    <p class="page-subtitle">各方法的最佳冲泡参数</p>
+                </div>
+                <div id="rec-grid"></div>
+            </div>
+
+            <div class="page" id="page-timer">
+                <div class="page-header">
+                    <h1 class="page-title">冲泡计时器</h1>
+                    <p class="page-subtitle" id="timer-method-name">手冲咖啡计时</p>
+                </div>
+
+                <div class="param-mode-toggle">
+                    <button class="param-mode-btn active" id="btn-recommended" data-mode="recommended">
+                        <span>📋</span> 推荐参数
+                    </button>
+                    <button class="param-mode-btn" id="btn-manual" data-mode="manual">
+                        <span>✏️</span> 手动参数
+                    </button>
+                </div>
+
+                <div class="recommended-params-panel" id="recommended-params-panel">
+                    <div class="recommended-params-title">💡 选择推荐配方</div>
+                    <div class="recipe-select-list" id="recipe-select-list"></div>
+                </div>
+
+                <div class="manual-params" id="manual-params-panel">
+                    <div class="manual-params-title">✏️ 手动设置参数</div>
+                    <div class="manual-params-grid">
+                        <div class="form-group">
+                            <label class="form-label">粉量 (g)</label>
+                            <input type="number" class="form-input" id="manual-dose" value="20" min="1" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">水量 (ml)</label>
+                            <input type="number" class="form-input" id="manual-water" value="300" min="50" max="1000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">水温 (°C)</label>
+                            <input type="number" class="form-input" id="manual-temp" value="92" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">研磨度</label>
+                            <select class="form-select" id="manual-grind">
+                                <option value="极细">极细</option>
+                                <option value="细">细</option>
+                                <option value="中细">中细</option>
+                                <option value="中" selected>中</option>
+                                <option value="中粗">中粗</option>
+                                <option value="粗">粗</option>
+                                <option value="极粗">极粗</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="stages-editor">
+                        <div class="stages-editor-title">⏱️ 冲泡阶段</div>
+                        <div class="stages-editor-list" id="stages-editor-list"></div>
+                        <button class="add-stage-btn" id="btn-add-stage">➕ 添加阶段</button>
+                    </div>
+                </div>
+
+                <div class="timer-container">
+                    <div class="timer-display">
+                        <div class="timer-circle">
+                            <div class="timer-progress">
+                                <svg viewBox="0 0 280 280">
+                                    <circle cx="140" cy="140" r="130" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="timer-time" id="timer-display">00:00</div>
+                                <div class="timer-stage" id="timer-stage-display">准备开始</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timer-controls">
+                        <button class="btn btn-primary btn-lg" id="btn-start">
+                            <span>▶</span> 开始
+                        </button>
+                        <button class="btn btn-secondary btn-lg" id="btn-pause" style="display: none;">
+                            <span>⏸</span> 暂停
+                        </button>
+                        <button class="btn btn-outline btn-lg" id="btn-reset">
+                            <span>↺</span> 重置
+                        </button>
+                    </div>
+
+                    <div class="timer-stages" id="timer-stages">
+                        <div class="stage-item" data-stage="0">
+                            <span class="stage-name">选择方法</span>
+                            <span class="stage-time">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="page-records">
+                <div class="page-header">
+                    <h1 class="page-title">我的记录</h1>
+                    <p class="page-subtitle">回顾你的咖啡旅程</p>
+                </div>
+                <div class="records-header">
+                    <button class="btn btn-primary" id="btn-add-record-2">
+                        <span>➕</span> 添加记录
+                    </button>
+                </div>
+                <div class="records-list" id="all-records"></div>
+            </div>
+        </main>
+
+        <nav class="mobile-nav">
+            <div class="mobile-nav-items">
+                <button class="mobile-nav-item active" data-page="home">
+                    <span class="nav-icon">🏠</span>
+                    <span>首页</span>
+                </button>
+                <button class="mobile-nav-item" data-page="timer">
+                    <span class="nav-icon">⏱️</span>
+                    <span>计时</span>
+                </button>
+                <button class="mobile-nav-item" data-page="records">
+                    <span class="nav-icon">📓</span>
+                    <span>记录</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <div class="modal-overlay" id="record-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">添加记录</h3>
+                <button class="modal-close" id="btn-close-modal">×</button>
+            </div>
+            <form id="record-form">
+                <input type="hidden" id="record-id">
+                
+                <div class="form-group">
+                    <label class="form-label">冲泡方法</label>
+                    <select class="form-select" id="form-method-select">
+                        <option value="pour-over">☕ 手冲</option>
+                        <option value="french-press">🫖 法压壶</option>
+                        <option value="aeropress">💨 爱乐压</option>
+                        <option value="clever">🧠 聪明杯</option>
+                        <option value="cold-brew">🧊 冷萃</option>
+                        <option value="siphon">⚗️ 虹吸壶</option>
+                    </select>
+                </div>
+
+                <div class="form-row form-row-3">
+                    <div class="form-group">
+                        <label class="form-label">粉量 (g)</label>
+                        <input type="number" class="form-input" id="form-dose" placeholder="20" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">水量 (ml)</label>
+                        <input type="number" class="form-input" id="form-water" placeholder="300" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">水温 (°C)</label>
+                        <input type="number" class="form-input" id="form-temp" placeholder="92" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">研磨度</label>
+                        <select class="form-select" id="form-grind">
+                            <option value="极细">极细</option>
+                            <option value="细">细</option>
+                            <option value="中细">中细</option>
+                            <option value="中" selected>中</option>
+                            <option value="中粗">中粗</option>
+                            <option value="粗">粗</option>
+                            <option value="极粗">极粗</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">咖啡烘焙度</label>
+                        <select class="form-select" id="form-roast">
+                            <option value="浅烘">浅烘</option>
+                            <option value="浅中烘">浅中烘</option>
+                            <option value="中烘" selected>中烘</option>
+                            <option value="中深烘">中深烘</option>
+                            <option value="深烘">深烘</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">冲泡时长 (秒)</label>
+                    <input type="number" class="form-input" id="form-time" placeholder="180">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">冲泡阶段 (可选)</label>
+                    <div class="record-stages-editor" id="record-stages-editor">
+                        <div class="record-stages-list" id="record-stages-list"></div>
+                        <button type="button" class="add-stage-btn" id="btn-add-record-stage">➕ 添加阶段</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">咖啡豆名称</label>
+                    <input type="text" class="form-input" id="form-coffee-name" placeholder="耶加雪菲">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">口感评分</label>
+                    <div class="rating" id="form-rating">
+                        <span class="rating-star" data-value="1">★</span>
+                        <span class="rating-star" data-value="2">★</span>
+                        <span class="rating-star" data-value="3">★</span>
+                        <span class="rating-star" data-value="4">★</span>
+                        <span class="rating-star" data-value="5">★</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">口感描述</label>
+                    <textarea class="form-textarea" id="form-notes" placeholder="描述这款咖啡的口感特点..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">上传图片</label>
+                    <div class="image-upload" id="image-upload">
+                        <div class="image-upload-icon">📷</div>
+                        <div class="image-upload-text">点击上传咖啡图片</div>
+                    </div>
+                    <input type="file" id="form-image" accept="image/*" style="display: none;">
+                    <div class="image-preview" id="image-preview" style="display: none;">
+                        <img id="preview-img" src="" alt="Preview">
+                        <button type="button" class="image-preview-remove" id="btn-remove-image">×</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button type="button" class="btn btn-outline" id="btn-cancel" style="flex: 1;">取消</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="recipe-preview-modal" id="recipe-preview-modal">
+        <div class="recipe-preview">
+            <div class="recipe-preview-header">
+                <button class="recipe-preview-close" id="btn-close-recipe">×</button>
+                <div class="recipe-preview-title" id="preview-title">Recipe Name</div>
+                <div class="recipe-preview-source" id="preview-source">Source</div>
+            </div>
+            <div class="recipe-preview-body">
+                <div class="recipe-preview-params" id="preview-params"></div>
+                <div class="recipe-preview-tips" id="preview-tips-section">
+                    <div class="recipe-preview-tips-title">💡 冲泡小贴士</div>
+                    <div class="recipe-preview-tips-text" id="preview-tips-text"></div>
+                </div>
+                <div class="recipe-preview-stages">
+                    <div class="recipe-preview-stages-title">⏱️ 冲泡阶段</div>
+                    <div id="preview-stages"></div>
+                </div>
+                <div class="recipe-preview-actions">
+                    <button class="btn btn-primary" id="preview-start-btn">
+                        <span>⏱️</span> 开始冲泡
+                    </button>
+                    <a href="#" target="_blank" class="btn btn-outline" id="preview-source-btn">
+                        🔗 查看原文
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="record-detail-modal" id="record-detail-modal">
+        <div class="record-detail">
+            <div class="record-detail-header">
+                <button class="record-detail-close" id="btn-close-detail">×</button>
+                <div class="record-detail-method">
+                    <span id="detail-method-icon">☕</span>
+                    <span id="detail-method-name">手冲</span>
+                </div>
+                <div class="record-detail-coffee" id="detail-coffee"></div>
+                <div class="record-detail-date" id="detail-date">2024年1月1日</div>
+            </div>
+            <div class="record-detail-body">
+                <div class="record-detail-section">
+                    <div class="record-detail-section-title">📊 冲泡参数</div>
+                    <div class="record-detail-params" id="detail-params"></div>
+                </div>
+                
+                <div class="record-detail-section" id="detail-stages-section">
+                    <div class="record-detail-section-title">⏱️ 冲泡阶段</div>
+                    <div class="record-detail-stages" id="detail-stages"></div>
+                </div>
+                
+                <div class="record-detail-section" id="detail-notes-section">
+                    <div class="record-detail-section-title">📝 口感描述</div>
+                    <div class="record-detail-notes" id="detail-notes"></div>
+                </div>
+                
+                <div class="record-detail-actions">
+                    <button class="btn btn-primary" id="btn-replay-timer">
+                        <span>⏱️</span> 用此参数冲泡
+                    </button>
+                    <button class="btn btn-outline" id="btn-edit-record">
+                        <span>✏️</span> 编辑记录
+                    </button>
+                    <button class="btn btn-outline" id="btn-save-as-recipe">
+                        <span>💾</span> 保存为配方
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="save-recipe-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="save-recipe-title">保存为配方</h3>
+                <button class="modal-close" id="btn-close-save-recipe">×</button>
+            </div>
+            <form id="save-recipe-form">
+                <input type="hidden" id="save-recipe-from-record">
+                <div class="form-group">
+                    <label class="form-label">配方名称</label>
+                    <input type="text" class="form-input" id="recipe-name" placeholder="我的独家配方" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">冲泡方法</label>
+                    <select class="form-select" id="recipe-method">
+                        <option value="pour-over">☕ 手冲</option>
+                        <option value="french-press">🫖 法压壶</option>
+                        <option value="aeropress">💨 爱乐压</option>
+                        <option value="clever">🧠 聪明杯</option>
+                        <option value="cold-brew">🧊 冷萃</option>
+                        <option value="siphon">⚗️ 虹吸壶</option>
+                    </select>
+                </div>
+                <div class="form-row form-row-3">
+                    <div class="form-group">
+                        <label class="form-label">粉量 (g)</label>
+                        <input type="number" class="form-input" id="recipe-dose" placeholder="20" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">水量 (ml)</label>
+                        <input type="number" class="form-input" id="recipe-water" placeholder="300" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">水温 (°C)</label>
+                        <input type="number" class="form-input" id="recipe-temp" placeholder="92" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">研磨度</label>
+                    <select class="form-select" id="recipe-grind">
+                        <option value="极细">极细</option>
+                        <option value="细">细</option>
+                        <option value="中细">中细</option>
+                        <option value="中" selected>中</option>
+                        <option value="中粗">中粗</option>
+                        <option value="粗">粗</option>
+                        <option value="极粗">极粗</option>
+                    </select>
+                </div>
+                <div class="stages-editor">
+                    <div class="stages-editor-title">⏱️ 冲泡阶段</div>
+                    <div class="stages-editor-list" id="recipe-stages-list"></div>
+                    <button type="button" class="add-stage-btn" id="btn-add-recipe-stage">➕ 添加阶段</button>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-save-recipe" style="flex: 1;">取消</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">保存配方</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="notion-config-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Notion 配置</h3>
+                <button class="modal-close" id="btn-close-config">×</button>
+            </div>
+            <div class="notion-config-body">
+                <div class="config-section">
+                    <h4>第一步：获取 API Key</h4>
+                    <ol class="config-steps">
+                        <li>打开 <a href="https://www.notion.so/my-integrations" target="_blank">Notion Integrations</a></li>
+                        <li>点击 <strong>Internal integrations</strong> 标签</li>
+                        <li>点击 <strong>New integration</strong></li>
+                        <li>填写名称 "Coffee Brew"，点击 Save</li>
+                        <li>复制 <strong>Internal Integration Token</strong></li>
+                    </ol>
+                </div>
+                
+                <div class="config-section">
+                    <h4>第二步：创建数据库</h4>
+                    <ol class="config-steps">
+                        <li>在 Notion 新建页面，输入 <code>/database</code></li>
+                        <li>选择 <strong>Table - Full page</strong></li>
+                        <li>添加以下属性列：</li>
+                    </ol>
+                    <table class="config-table">
+                        <tr><th>列名</th><th>类型</th></tr>
+                        <tr><td>咖啡豆</td><td>Title</td></tr>
+                        <tr><td>日期</td><td>Date</td></tr>
+                        <tr><td>冲泡方法</td><td>Select</td></tr>
+                        <tr><td>粉量</td><td>Number</td></tr>
+                        <tr><td>水量</td><td>Number</td></tr>
+                        <tr><td>水温</td><td>Number</td></tr>
+                        <tr><td>研磨度</td><td>Select</td></tr>
+                        <tr><td>烘焙度</td><td>Select</td></tr>
+                        <tr><td>时长</td><td>Number</td></tr>
+                        <tr><td>评分</td><td>Select</td></tr>
+                        <tr><td>口感描述</td><td>Text</td></tr>
+                    </table>
+                    <ol class="config-steps" start="4">
+                        <li>点击右上角 <strong>...</strong> → <strong>Connect to</strong> → 选择 "Coffee Brew"</li>
+                        <li>复制数据库 URL，获取 ID（URL 中 ? 前的部分）</li>
+                    </ol>
+                </div>
+                
+                <div class="config-section">
+                    <h4>第三步：填写配置</h4>
+                    <div class="form-group">
+                        <label class="form-label">API Key (Token)</label>
+                        <input type="password" class="form-input" id="config-api-key" placeholder="secret_xxxx...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">数据库 ID (Database ID)</label>
+                        <input type="text" class="form-input" id="config-database-id" placeholder="30e0d244141e8...">
+                    </div>
+                    <button class="btn btn-primary" id="btn-save-config" style="width: 100%;">保存配置</button>
+                    <div id="config-status" class="config-status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">保存成功</div>
+
+    <script src="js/notion-sync.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            window.initNotionSync();
+            
+            document.getElementById('btn-add-record')?.addEventListener('click', function() {
+                window.openRecordModal();
+            });
+            document.getElementById('btn-add-record-2')?.addEventListener('click', function() {
+                window.openRecordModal();
+            });
+            document.getElementById('btn-close-modal')?.addEventListener('click', function() {
+                window.closeRecordModal();
+            });
+            document.getElementById('btn-cancel')?.addEventListener('click', function() {
+                window.closeRecordModal();
+            });
+            document.getElementById('image-upload')?.addEventListener('click', function() {
+                document.getElementById('form-image')?.click();
+            });
+            document.getElementById('form-image')?.addEventListener('change', function(e) {
+                window.handleImageUpload?.(e);
+            });
+            document.getElementById('btn-remove-image')?.addEventListener('click', function() {
+                window.removeImage?.();
+            });
+            document.getElementById('record-form')?.addEventListener('submit', function(e) {
+                window.saveRecord?.(e);
+            });
+            document.getElementById('btn-close-recipe')?.addEventListener('click', function() {
+                window.closeRecipePreview?.();
+            });
+            document.getElementById('recipe-preview-modal')?.addEventListener('click', function(e) {
+                if (e.target === this) window.closeRecipePreview?.();
+            });
+            document.getElementById('preview-start-btn')?.addEventListener('click', function() {
+                window.closeRecipePreview?.();
+            });
+            document.getElementById('btn-close-detail')?.addEventListener('click', function() {
+                window.closeRecordDetail?.();
+            });
+            document.getElementById('record-detail-modal')?.addEventListener('click', function(e) {
+                if (e.target === this) window.closeRecordDetail?.();
+            });
+            document.getElementById('btn-replay-timer')?.addEventListener('click', function() {
+                window.replayTimerFromRecord?.();
+            });
+            document.getElementById('btn-edit-record')?.addEventListener('click', function() {
+                window.editRecordFromDetail?.();
+            });
+            document.getElementById('form-method-select')?.addEventListener('change', function() {
+                window.handleRecordMethodChange?.();
+            });
+            document.getElementById('btn-add-record-stage')?.addEventListener('click', function() {
+                window.addRecordStage?.();
+            });
+            document.getElementById('btn-start')?.addEventListener('click', function() {
+                window.startTimer?.();
+            });
+            document.getElementById('btn-pause')?.addEventListener('click', function() {
+                window.pauseTimer?.();
+            });
+            document.getElementById('btn-reset')?.addEventListener('click', function() {
+                window.resetTimer?.();
+            });
+            document.getElementById('btn-recommended')?.addEventListener('click', function() {
+                window.switchParamMode?.('recommended');
+            });
+            document.getElementById('btn-manual')?.addEventListener('click', function() {
+                window.switchParamMode?.('manual');
+            });
+            document.getElementById('btn-add-stage')?.addEventListener('click', function() {
+                window.addStage?.();
+            });
+            document.querySelectorAll('.quick-action').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var page = this.getAttribute('data-page');
+                    if (page) window.navigateTo?.(page);
+                });
+            });
+            document.querySelectorAll('.btn-outline[data-page]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var page = this.getAttribute('data-page');
+                    if (page) window.navigateTo?.(page);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

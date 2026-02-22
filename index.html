@@ -134,8 +134,11 @@
                     <p class="page-subtitle" id="timer-method-name">手冲咖啡计时</p>
                 </div>
 
-                <div class="recommended-params-panel" id="recommended-params-panel">
-                    <div class="recommended-params-title" onclick="toggleRecommendedPanel()">💡 选择推荐配方 (点击折叠)</div>
+                <div class="recommended-params-toggle" onclick="toggleRecommendedPanel()">
+                    <span>💡 选择推荐配方</span>
+                    <span class="toggle-icon" id="toggle-icon">▼</span>
+                </div>
+                <div class="recommended-params-panel active" id="recommended-params-panel">
                     <div class="recipe-select-list" id="recipe-select-list"></div>
                 </div>
 
@@ -585,12 +588,6 @@
             });
             document.getElementById('btn-reset')?.addEventListener('click', function() {
                 window.resetTimer?.();
-            });
-            document.getElementById('btn-recommended')?.addEventListener('click', function() {
-                window.switchParamMode?.('recommended');
-            });
-            document.getElementById('btn-manual')?.addEventListener('click', function() {
-                window.switchParamMode?.('manual');
             });
             document.getElementById('btn-add-stage')?.addEventListener('click', function() {
                 window.addStage?.();

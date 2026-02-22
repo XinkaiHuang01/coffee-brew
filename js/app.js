@@ -676,14 +676,35 @@ function selectRecipe(recipeIndex) {
     const recipes = coffeeRecipes['pour-over'];
     if (!recipes || !recipes[recipeIndex]) return;
     
-    currentRecipe = recipes[recipeIndex];
-    currentTimerMethod = { id: 'pour-over', name: '手冲', icon: '☕', ...currentRecipe };
+    const recipe = recipes[recipeIndex];
+    currentRecipe = recipe;
+    currentTimerMethod = { id: 'pour-over', name: '手冲', icon: '☕', ...recipe };
     
-    document.getElementById('timer-method-name').textContent = `手冲 - ${currentRecipe.name}`;
+    document.getElementById('timer-method-name').textContent = `手冲 - ${recipe.name}`;
     renderTimerStages(currentTimerMethod);
     renderRecipeSelectList();
     
-    showToast(`已选择 ${currentRecipe.name}`);
+    // 显示参数编辑面板和阶段编辑器
+    const paramsPanel = document.getElementById('manual-params-panel');
+    const stagesEditor = document.getElementById('timer-stages-editor');
+    if (paramsPanel) paramsPanel.style.display = 'block';
+    if (stagesEditor) stagesEditor.style.display = 'block';
+    
+    // 填充参数
+    const doseEl = document.getElementById('timer-dose');
+    const waterEl = document.getElementById('timer-water');
+    const tempEl = document.getElementById('timer-temp');
+    const grindEl = document.getElementById('timer-grind');
+    
+    if (doseEl) doseEl.value = recipe.params.dose;
+    if (waterEl) waterEl.value = recipe.params.water;
+    if (tempEl) tempEl.value = recipe.params.temp;
+    if (grindEl) grindEl.value = recipe.params.grind;
+    
+    // 初始化阶段编辑器
+    initTimerStagesEditor(recipe.stages);
+    
+    showToast(`已选择 ${recipe.name}`);
 }
 
 // Manual params

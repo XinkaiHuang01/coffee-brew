@@ -352,6 +352,12 @@ function setupNavigation() {
 function navigateTo(page) {
     if (!page) return;
     
+    // 检查Notion同步状态，如果未同步则显示提示
+    const indicator = document.getElementById('sync-indicator');
+    if (indicator && (indicator.classList.contains('offline') || !indicator.classList.contains('synced'))) {
+        showToast('⚠️ 请配置 Notion 以同步保存您的冲泡记录');
+    }
+    
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const targetPage = document.getElementById('page-' + page);
     if (!targetPage) return;

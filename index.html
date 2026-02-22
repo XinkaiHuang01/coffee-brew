@@ -26,19 +26,19 @@
                 <button class="notion-config-btn" id="btn-open-config" title="配置 Notion">⚙️</button>
             </div>
             <nav class="nav">
-                <a href="javascript:void(0)" class="nav-item active" data-page="home">
+                <a href="javascript:void(0)" class="nav-item active" data-page="home" onclick="navigateTo('home')">
                     <span class="nav-icon">🏠</span>
                     <span>首页</span>
                 </a>
-                <a href="javascript:void(0)" class="nav-item" data-page="recommendations">
+                <a href="javascript:void(0)" class="nav-item" data-page="recommendations" onclick="navigateTo('recommendations')">
                     <span class="nav-icon">📋</span>
                     <span>推荐参数</span>
                 </a>
-                <a href="javascript:void(0)" class="nav-item" data-page="timer">
+                <a href="javascript:void(0)" class="nav-item" data-page="timer" onclick="navigateTo('timer')">
                     <span class="nav-icon">⏱️</span>
                     <span>冲泡计时器</span>
                 </a>
-                <a href="javascript:void(0)" class="nav-item" data-page="records">
+                <a href="javascript:void(0)" class="nav-item" data-page="records" onclick="navigateTo('records')">
                     <span class="nav-icon">📓</span>
                     <span>我的记录</span>
                 </a>
@@ -194,15 +194,15 @@
 
         <nav class="mobile-nav">
             <div class="mobile-nav-items">
-                <button class="mobile-nav-item active" data-page="home">
+                <button class="mobile-nav-item active" data-page="home" onclick="navigateTo('home')">
                     <span class="nav-icon">🏠</span>
                     <span>首页</span>
                 </button>
-                <button class="mobile-nav-item" data-page="timer">
+                <button class="mobile-nav-item" data-page="timer" onclick="navigateTo('timer')">
                     <span class="nav-icon">⏱️</span>
                     <span>计时</span>
                 </button>
-                <button class="mobile-nav-item" data-page="records">
+                <button class="mobile-nav-item" data-page="records" onclick="navigateTo('records')">
                     <span class="nav-icon">📓</span>
                     <span>记录</span>
                 </button>

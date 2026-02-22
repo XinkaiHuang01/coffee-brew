@@ -1748,9 +1748,10 @@ h1, h2, h3, h4 {
     padding: 14px 24px;
     border-radius: var(--radius-sm);
     font-size: 14px;
-    z-index: 2000;
+    z-index: 50;
     opacity: 0;
     transition: var(--transition);
+    pointer-events: none;
 }
 
 .toast.show {

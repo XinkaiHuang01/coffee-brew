@@ -544,10 +544,25 @@ function startWithRecipe(methodId, recipeIndex, isCommunity = false) {
     navigateTo('timer');
     
     setTimeout(() => {
-        document.getElementById('form-dose').value = recipe.params.dose;
-        document.getElementById('form-water').value = recipe.params.water;
-        document.getElementById('form-temp').value = recipe.params.temp;
-        document.getElementById('form-grind').value = recipe.params.grind;
+        // 填充计时器页面的参数编辑面板
+        const doseEl = document.getElementById('timer-dose');
+        const waterEl = document.getElementById('timer-water');
+        const tempEl = document.getElementById('timer-temp');
+        const grindEl = document.getElementById('timer-grind');
+        
+        if (doseEl) doseEl.value = recipe.params.dose;
+        if (waterEl) waterEl.value = recipe.params.water;
+        if (tempEl) tempEl.value = recipe.params.temp;
+        if (grindEl) grindEl.value = recipe.params.grind;
+        
+        // 显示参数编辑面板和阶段编辑器
+        const paramsPanel = document.getElementById('manual-params-panel');
+        const stagesEditor = document.getElementById('timer-stages-editor');
+        if (paramsPanel) paramsPanel.style.display = 'block';
+        if (stagesEditor) stagesEditor.style.display = 'block';
+        
+        // 初始化阶段编辑器
+        initTimerStagesEditor(recipe.stages);
     }, 100);
     
     showToast(`已选择 ${recipe.name}，点击开始计时`);
@@ -672,6 +687,93 @@ function selectRecipe(recipeIndex) {
 }
 
 // Manual params
+
+// Timer Stages Editor (for recipe params editing)
+let timerStages = [];
+
+function initTimerStagesEditor(stages) {
+    timerStages = stages ? [...stages] : [...defaultMethodStages['pour-over']];
+    renderTimerStagesEditor();
+    
+    // Setup add stage button
+    const addBtn = document.getElementById('btn-add-timer-stage');
+    if (addBtn) {
+        addBtn.onclick = addTimerStage;
+    }
+}
+
+function renderTimerStagesEditor() {
+    const container = document.getElementById('timer-stages-list');
+    if (!container) return;
+    
+    container.innerHTML = timerStages.map((stage, index) => `
+        <div class="stage-editor-item">
+            <input type="text" class="form-input stage-editor-name" value="${stage.name}" 
+                   onchange="updateTimerStage(${index}, 'name', this.value)" placeholder="阶段名称">
+            <input type="number" class="form-input stage-editor-time" value="${stage.time}" 
+                   min="1" max="3600" onchange="updateTimerStage(${index}, 'time', this.value)" placeholder="秒">
+            <button class="stage-editor-remove" onclick="removeTimerStage(${index})">×</button>
+        </div>
+    `).join('');
+}
+
+function addTimerStage() {
+    timerStages.push({ name: '新阶段', time: 30 });
+    renderTimerStagesEditor();
+    applyTimerStagesToTimer();
+}
+
+function removeTimerStage(index) {
+    if (timerStages.length <= 1) {
+        showToast('至少保留一个阶段');
+        return;
+    }
+    timerStages.splice(index, 1);
+    renderTimerStagesEditor();
+    applyTimerStagesToTimer();
+}
+
+function updateTimerStage(index, field, value) {
+    if (field === 'time') {
+        timerStages[index].time = parseInt(value) || 30;
+    } else {
+        timerStages[index].name = value || '新阶段';
+    }
+    applyTimerStagesToTimer();
+}
+
+function applyTimerStagesToTimer() {
+    if (!currentTimerMethod) return;
+    
+    currentTimerMethod.stages = [...timerStages];
+    renderTimerStages(currentTimerMethod);
+}
+
+// Update timer params when inputs change
+function updateTimerParams() {
+    if (!currentTimerMethod) return;
+    
+    const dose = parseInt(document.getElementById('timer-dose').value) || 20;
+    const water = parseInt(document.getElementById('timer-water').value) || 300;
+    const temp = parseInt(document.getElementById('timer-temp').value) || 92;
+    const grind = document.getElementById('timer-grind').value;
+    
+    currentTimerMethod.params = {
+        dose,
+        water,
+        temp,
+        grind,
+        ratio: `1:${Math.round(water/dose)}`
+    };
+    
+    // Update stages if they've been edited
+    if (timerStages.length > 0) {
+        currentTimerMethod.stages = [...timerStages];
+    }
+    
+    renderTimerStages(currentTimerMethod);
+}
+
 function renderStagesEditor() {
     const container = document.getElementById('stages-editor-list');
     container.innerHTML = manualStages.map((stage, index) => `

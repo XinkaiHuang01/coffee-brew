@@ -1877,6 +1877,68 @@ h1, h2, h3, h4 {
     font-size: 14px;
 }
 
+/* Timer Page Manual Params Panel */
+.manual-params-panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+}
+
+.manual-params-panel .manual-params-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.manual-params-panel .manual-params-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.manual-params-panel .manual-params-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.manual-params-panel .manual-params-item label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.manual-params-panel .form-input,
+.manual-params-panel .form-select {
+    padding: 8px 10px;
+    font-size: 14px;
+}
+
+/* Timer Stages Editor */
+.timer-stages-editor {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+}
+
+.timer-stages-editor .stages-editor-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
 /* Stages Editor */
 .stages-editor {
     margin-top: 16px;

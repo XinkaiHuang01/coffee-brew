@@ -2,6 +2,8 @@
 
 咖啡冲泡计时器与记录应用，支持可选的 Notion 数据同步。
 
+由于应用需要后端服务器，请本地运行（访问地址见下方）。
+
 ## 功能特性
 
 - ⏱️ **冲泡计时器** - 分阶段倒计时，视觉进度环显示，音频提示音
@@ -18,23 +20,28 @@
 
 ## 快速开始
 
-### 安装
+### 1. 克隆项目
+
+```bash
+git clone https://github.com/XinkaiHuang01/coffee-brew.git
+cd coffee-brew
+```
+
+### 2. 安装依赖
 
 ```bash
 npm install
 ```
 
-### 启动
+### 3. 启动
 
 ```bash
-# 启动后端服务器 (http://localhost:3001)
 npm start
-
-# 或启动开发模式 (服务器 + 前端热重载)
-npm run dev
 ```
 
-### 配置 Notion 同步（可选）
+然后访问: **http://localhost:3001**
+
+## 配置 Notion 同步（可选）
 
 1. 创建 Notion Integration: https://www.notion.so/my-integrations
 2. 获取 API Key
